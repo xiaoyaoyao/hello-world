@@ -1,0 +1,62 @@
+import {Component,EventEmitter} from "angular2/core";
+import {CORE_DIRECTIVES,FORM_DIRECTIVES} from "angular2/common";
+import {Control,ControlGroup} from "angular2/common";
+let $=window["jQuery"];//重点：载入jquery
+interface TableheaderArgs{
+    table_checkedLists:Array<any>;
+}
+@Component({
+    selector:"customTabheader",
+    properties:["tableheaderArgs"],
+    directives:[CORE_DIRECTIVES,FORM_DIRECTIVES],
+    events:["change"],
+    template:`
+         <div class="dropdown" style="display:inline-block" >
+                <button class="btn btn-sm btn-default dropdown-toggle customize_btn" data-toggle="dropdown" 
+                         (click)="getcheckedNumber()">
+                      自定义表头<span class="caret"></span>
+                </button>
+               <form class="dropdown-menu pull-right" role="menu" >
+                        <div *ngFor="#table_checkedList of tableheaderArgs.table_checkedLists" class="tableheader_checkbox"    >
+                                  <label >
+                                     <input type="checkbox"   data-id="{{Table_headerID}}" 
+                                        (click)="changeTableheader(table_checkedList.Table_headerID)"
+                                        id="test1"
+                                         [checked]='table_checkedList.isChecked==true?"checked":""'>
+                                     {{table_checkedList.Table_headerValue}}
+                                  </label>
+                        </div>
+                 </form>
+         </div> 
+         
+	`
+})
+export class CustomTablheader{
+    tableheaderArgs:TableheaderArgs;
+    change:EventEmitter<any> = new EventEmitter();
+
+    checked:string;
+    constructor() {
+        console.log("构建自定义表头");
+        this.tableheaderArgs = {
+            table_checkedLists: [{"Table_headerID": "test1","Table_headerValue": "test11111111", "isChecked": false},
+                {"Table_headerID": "test2","Table_headerValue": "test22222222222222", "isChecked": true},
+                {"Table_headerID": "test3","Table_headerValue": "test333333333333", "isChecked": false}
+            ]
+        }
+        }
+
+    setTableheader(data:TableheaderArgs){
+        this.tableheaderArgs=data;
+    }
+
+    //判断选中数量
+
+    //调试代码
+
+    //鼠标点击事件
+    changeTableheader(Table_headerID:any) {
+        this.change.emit(Table_headerID);
+    }
+
+}
